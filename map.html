@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Leaflet Map with Current Location</title>
+
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+        <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+        #coordinates {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Find My Current Location with Leaflet</h1>
+
+        <!-- Button to get the current location -->
+        <button onclick="getLocation()">Get My Exact Location</button>
+
+        <!-- Div to display latitude and longitude -->
+        <div id="coordinates">
+            Latitude: <span id="latitude">-</span><br>
+            Longitude: <span id="longitude">-</span>
+        </div>
+
+        <!-- Div to display the Leaflet map -->
+        <div id="map"></div>
+        <p><a href="map1.html">google-map</a></p>
+        <!-- Leaflet JavaScript -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+        <script>
+        // Initialize the Leaflet map
+        const map = L.map('map').setView([7.8731, 80.7718], 8);  // Default to Sri Lanka
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Function to get the user's current location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Display the latitude and longitude
+                        document.getElementById("latitude").textContent = latitude;
+                        document.getElementById("longitude").textContent = longitude;
+
+                        // Update the map to the user's location
+                        const userLocation = [latitude, longitude];
+                        map.setView(userLocation, 15);
+
+                        // Add a marker for the user's location
+                        L.marker(userLocation).addTo(map)
+                            .bindPopup("You are here!")
+                            .openPopup();
+                    },
+                    function () {
+                        alert("Unable to retrieve your location.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+    </body>
+</html>
